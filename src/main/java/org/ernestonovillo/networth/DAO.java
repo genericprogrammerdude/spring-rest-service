@@ -8,36 +8,50 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.InitializingBean;
+
 /**
  * Data Access Object for resources to use.
  */
-public class DAO {
+public class DAO implements InitializingBean {
     private final String dbPath;
     private Connection connection;
 
-    public DAO(final String inDbPath) {
-        dbPath = inDbPath;
-        connection = null;
+    // @Autowired
+    public DAO(final String dbPath) {
+        this.dbPath = dbPath;
+        this.connection = null;
     }
 
     public boolean connect() {
+        connection = null;
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
         } catch (final SQLException e) {
             System.err.println(e.getMessage());
         }
 
-        return connection != null;
+        return isConnected();
     }
 
     public void disconnect() {
         try {
             if (connection != null) {
                 connection.close();
+                connection = null;
             }
         } catch (final SQLException e) {
             System.err.println(e);
         }
+    }
+
+    public boolean isConnected() {
+        return connection != null;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        connect();
     }
 
     public List<User> getUsers() {

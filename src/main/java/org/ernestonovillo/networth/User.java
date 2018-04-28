@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 /**
  * Model for a user of the Net Worth system.
+ *
+ * TODO: This should be annotated with @Entity to take advantage of the Java Persistence API (JPA).
+ * See https://spring.io/guides/gs/accessing-data-jpa/ and
+ * https://docs.spring.io/spring-boot/docs/current/reference/html/howto-data-access.html
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY) // Allows Jackson to automatically serialize private fields
 public class User {
