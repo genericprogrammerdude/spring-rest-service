@@ -26,6 +26,7 @@ public class DAO {
 
     @PostConstruct
     public void connect() {
+        assert (connection == null);
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
         } catch (final SQLException e) {
