@@ -19,7 +19,8 @@ public class NetWorthConfig {
 
     @Bean
     @Scope("prototype")
-    public UserListController userListController() {
-        return new UserListController(dao(null));
+    public NetWorthController netWorthController() {
+        // That null gets replaced with the value of ${networth.dbpath} in dao()
+        return new NetWorthController(dao(null));
     }
 }

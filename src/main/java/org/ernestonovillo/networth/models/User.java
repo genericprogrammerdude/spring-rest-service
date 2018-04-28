@@ -1,4 +1,4 @@
-package org.ernestonovillo.networth;
+package org.ernestonovillo.networth.models;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -15,12 +15,12 @@ public class User {
 
     private final long id;
     private String name;
-    private long languageId;
+    private String language;
 
-    User(long id, String name, long language) {
+    public User(long id, String name, String language) {
         this.id = id;
         this.name = name;
-        this.languageId = language;
+        this.language = language;
     }
 
     long getId() {
@@ -35,11 +35,11 @@ public class User {
         this.name = name;
     }
 
-    long getLanguage() {
-        return languageId;
+    String getLanguage() {
+        return language;
     }
 
-    void setLanguage(long languageId) {
-        this.languageId = languageId;
+    void setLanguage(final String language) {
+        this.language = language;
     }
 }
