@@ -33,7 +33,7 @@ public class Controller {
         return dao.getUser(id);
     }
 
-    @GetMapping("/networth/{id}")
+    @GetMapping("/net-worth/{id}")
     public NetWorthData getNetWorthData(@PathVariable("id") long id) {
         return dao.getNetWorthData(id);
     }

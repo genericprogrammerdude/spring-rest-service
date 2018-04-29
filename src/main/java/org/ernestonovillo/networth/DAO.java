@@ -148,8 +148,7 @@ public class DAO {
         assert (connection != null) : "DAO is not connected to database";
 
         // Validate that the language exists
-        final Language language = getLanguage(languageId);
-        if (language == null) {
+        if (!idExists(languageId, "languages")) {
             return false;
         }
 
@@ -182,15 +181,8 @@ public class DAO {
     public boolean updateUser(long userId, String name, long languageId) {
         assert (connection != null) : "DAO is not connected to database";
 
-        // Validate that the user exists
-        final User user = getUser(userId);
-        if (user == null) {
-            return false;
-        }
-
-        // Validate that the language exists
-        final Language language = getLanguage(languageId);
-        if (language == null) {
+        // Validate that the user id and language id exist
+        if (!idExists(userId, "users") || !idExists(languageId, "languages")) {
             return false;
         }
 
@@ -226,40 +218,51 @@ public class DAO {
      * @return true if updated successfully, false otherwise.
      */
     public boolean updateAsset(long assetId, String name, double value, long currencyId, long categoryId) {
-        return false;
+        assert (connection != null) : "DAO is not connected to database";
+
+        // Validate some of the data
+        if (!idExists(assetId, "assets") || !idExists(currencyId, "currencies")
+                || !idExists(categoryId, "asset_categories")) {
+            return false;
+        }
+
+        try {
+            final String sql = "UPDATE assets SET name = ?, value = ?, currency = ?, category = ? WHERE id = ?";
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setDouble(2, value);
+            statement.setLong(3, currencyId);
+            statement.setLong(4, categoryId);
+            statement.setLong(5, assetId);
+            final int updateResult = statement.executeUpdate();
+            return (updateResult != 0);
+
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
-     * Retrieves a language from the db.
+     * Verifies whether an id exists in the named table.
      *
-     * @param languageId
-     *            Id of the language to retrieve.
-     * @return A valid Language instance or null if the given id does not exist.
+     * @param id
+     *            Id to verify.
+     *
+     * @return true if the id is present in the table.
      */
-    private Language getLanguage(long languageId) {
-        assert (connection != null) : "DAO is not connected to database";
-
-        Language language = null;
-
+    private boolean idExists(long id, final String tableName) {
         try {
-            final String sql = "SELECT id, name FROM languages WHERE id = ?";
+            final String sql = "SELECT id FROM " + tableName + " WHERE id = ?";
             final PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, languageId);
+            statement.setLong(1, id);
             final ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                language = new Language(resultSet.getLong("id"), resultSet.getString("name"));
+            return resultSet.next();
 
-                if (resultSet.next()) {
-                    System.err.println("Bad DB schema if select of a single index id returns more than one record");
-                    language = null;
-                }
-            }
         } catch (final SQLException e) {
-            language = null;
             e.printStackTrace();
+            return false;
         }
-
-        return language;
     }
 
     private List<Asset> getAssets(User user) {
