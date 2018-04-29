@@ -34,6 +34,9 @@ public class DAO {
         this.connection = null;
     }
 
+    /**
+     * Connects to the database in dbPath.
+     */
     @PostConstruct
     public void connect() {
         assert (connection == null) : "DAO is already connected to database";
@@ -44,6 +47,9 @@ public class DAO {
         }
     }
 
+    /**
+     * Disconnects from the database.
+     */
     @PreDestroy
     public void disconnect() {
         try {
@@ -56,6 +62,11 @@ public class DAO {
         }
     }
 
+    /**
+     * Retrieves the list of users.
+     *
+     * @return A list of users.
+     */
     public List<User> getUsers() {
         assert (connection != null) : "DAO is not connected to database";
 
@@ -78,6 +89,14 @@ public class DAO {
         return users;
     }
 
+    /**
+     * Retrieves a single user from the database.
+     *
+     * @param userId
+     *            Id of the user to retrieve.
+     *
+     * @return A valid user with the given id or null if the id wasn't found in the users table.
+     */
     public User getUser(long userId) {
         assert (connection != null) : "DAO is not connected to database";
 
@@ -265,6 +284,14 @@ public class DAO {
         }
     }
 
+    /**
+     * Gets the list of assets for the given user.
+     *
+     * @param user
+     *            A User model instance.
+     *
+     * @return A valid list of assets or null if none were found or there were errors.
+     */
     private List<Asset> getAssets(User user) {
         assert (connection != null) : "DAO is not connected to database";
 
@@ -300,6 +327,14 @@ public class DAO {
         return assets;
     }
 
+    /**
+     * Gets the list of liabilities for the given user.
+     *
+     * @param user
+     *            A User model instance.
+     *
+     * @return A valid list of liabilities or null if none were found or there were errors.
+     */
     private List<Liability> getLiabilities(User user) {
         assert (connection != null) : "DAO is not connected to database";
 
