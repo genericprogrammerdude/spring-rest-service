@@ -91,7 +91,7 @@ public class DAO {
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = new User(userId, resultSet.getString("name"),
-                        new Language(resultSet.getLong("id"), resultSet.getString("langName")));
+                        new Language(resultSet.getLong("langId"), resultSet.getString("langName")));
 
                 if (resultSet.next()) {
                     System.err.println("Bad DB schema if select of a single index id returns more than one record");
@@ -132,6 +132,134 @@ public class DAO {
         netWorthData = new NetWorthData(user, assets, liabilities);
 
         return netWorthData;
+    }
+
+    /**
+     * Adds a new user to the database.
+     *
+     * @param name
+     *            Name of the new user.
+     * @param languageId
+     *            Language id for the new user.
+     *
+     * @return true if added successfully, false otherwise.
+     */
+    public boolean addUser(String name, long languageId) {
+        assert (connection != null) : "DAO is not connected to database";
+
+        // Validate that the language exists
+        final Language language = getLanguage(languageId);
+        if (language == null) {
+            return false;
+        }
+
+        try {
+            final String sql = "INSERT INTO users (name, language) VALUES (?, ?)";
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setLong(2, languageId);
+            final int updateResult = statement.executeUpdate();
+            return (updateResult != 0);
+
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Updates an existing user, validating the data before doing anything.
+     *
+     * @param userId
+     *            The id of the user to udpate.
+     * @param name
+     *            Name to give the user.
+     * @param languageId
+     *            Language to give the user.
+     *
+     * @return true if updated successfully, false otherwise.
+     */
+    public boolean updateUser(long userId, String name, long languageId) {
+        assert (connection != null) : "DAO is not connected to database";
+
+        // Validate that the user exists
+        final User user = getUser(userId);
+        if (user == null) {
+            return false;
+        }
+
+        // Validate that the language exists
+        final Language language = getLanguage(languageId);
+        if (language == null) {
+            return false;
+        }
+
+        try {
+            final String sql = "UPDATE users SET name = ?, language = ? WHERE id = ?";
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, name);
+            statement.setLong(2, languageId);
+            statement.setLong(3, userId);
+            final int updateResult = statement.executeUpdate();
+            return (updateResult != 0);
+
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Updates a stored asset.
+     *
+     * @param assetId
+     *            Asset id.
+     * @param name
+     *            Asset's name.
+     * @param value
+     *            Asset's value.
+     * @param currencyId
+     *            Asset's currency id.
+     * @param categoryId
+     *            Asset's category id.
+     *
+     * @return true if updated successfully, false otherwise.
+     */
+    public boolean updateAsset(long assetId, String name, double value, long currencyId, long categoryId) {
+        return false;
+    }
+
+    /**
+     * Retrieves a language from the db.
+     *
+     * @param languageId
+     *            Id of the language to retrieve.
+     * @return A valid Language instance or null if the given id does not exist.
+     */
+    private Language getLanguage(long languageId) {
+        assert (connection != null) : "DAO is not connected to database";
+
+        Language language = null;
+
+        try {
+            final String sql = "SELECT id, name FROM languages WHERE id = ?";
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, languageId);
+            final ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                language = new Language(resultSet.getLong("id"), resultSet.getString("name"));
+
+                if (resultSet.next()) {
+                    System.err.println("Bad DB schema if select of a single index id returns more than one record");
+                    language = null;
+                }
+            }
+        } catch (final SQLException e) {
+            language = null;
+            e.printStackTrace();
+        }
+
+        return language;
     }
 
     private List<Asset> getAssets(User user) {
