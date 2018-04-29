@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for UserList resource.
  */
 @RestController
-public class NetWorthController {
+public class Controller {
 
     private DAO dao = null;;
 
-    public NetWorthController(DAO dao) {
+    public Controller(DAO dao) {
         this.dao = dao;
     }
 

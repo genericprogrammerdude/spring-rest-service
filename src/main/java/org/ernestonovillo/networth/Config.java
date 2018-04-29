@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope;
  * Configuration for beans.
  */
 @Configuration
-public class NetWorthConfig {
+public class Config {
 
     @Bean
     @Scope("singleton")
@@ -19,8 +19,8 @@ public class NetWorthConfig {
 
     @Bean
     @Scope("prototype")
-    public NetWorthController netWorthController() {
+    public Controller controller() {
         // That null gets replaced with the value of ${networth.dbpath} in dao()
-        return new NetWorthController(dao(null));
+        return new Controller(dao(null));
     }
 }

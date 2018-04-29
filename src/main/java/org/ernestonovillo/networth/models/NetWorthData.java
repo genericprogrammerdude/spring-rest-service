@@ -16,11 +16,11 @@ public class NetWorthData {
 
     @SuppressWarnings("unused")
     private final List<Asset> assets;
-    
+
     @SuppressWarnings("unused")
     private final List<Liability> liabilities;
-    
-    NetWorthData(User user, List<Asset> assets, List<Liability> liabilities) {
+
+    public NetWorthData(User user, List<Asset> assets, List<Liability> liabilities) {
         this.user = user;
         this.assets = assets;
         this.liabilities = liabilities;

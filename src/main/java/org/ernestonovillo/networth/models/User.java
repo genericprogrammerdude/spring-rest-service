@@ -14,32 +14,20 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class User {
 
     private final long id;
-    private String name;
-    private String language;
 
-    public User(long id, String name, String language) {
+    @SuppressWarnings("unused")
+    private final String name;
+
+    @SuppressWarnings("unused")
+    private final Language language;
+
+    public User(long id, String name, Language language) {
         this.id = id;
         this.name = name;
         this.language = language;
     }
 
-    long getId() {
+    public long getId() {
         return id;
-    }
-
-    String getName() {
-        return name;
-    }
-
-    void setName(final String name) {
-        this.name = name;
-    }
-
-    String getLanguage() {
-        return language;
-    }
-
-    void setLanguage(final String language) {
-        this.language = language;
     }
 }

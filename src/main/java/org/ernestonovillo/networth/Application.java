@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Handles application things.
  */
 @SpringBootApplication
-public class NetWorthApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(NetWorthApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
